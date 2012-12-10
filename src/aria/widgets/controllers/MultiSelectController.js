@@ -44,6 +44,13 @@ Aria.classDefinition({
         this._dataModel.selectedValues = [];
 
         /**
+         * Maximum no. of options to be selected from multiselect
+         * @protected
+         * @type Integer
+         */
+        this._maxOptions = null;
+
+        /**
          * Map between values and text display. The goal is too return the same object for the same text in the input,
          * for the case where the user check and uncheck an element in the multiselect dropdown
          * @protected
