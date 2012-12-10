@@ -71,6 +71,14 @@ Aria.classDefinition({
         },
 
         /**
+         * Set the configured maxOptions
+         * @param {Integer} maxOptions Used to select max no. of options from Multiselect
+         */
+        setMaxOptions : function (maxOptions) {
+            this._maxOptions = maxOptions;
+        },
+
+        /**
          * Set the display mode for the field
          * @param {String} separator Used to seperate items in the TextInput part of the multi-select
          */
@@ -156,7 +164,7 @@ Aria.classDefinition({
 
             var inSplit = textFieldValue.split(this._separator);
             if (inSplit) {
-                for (var i = 0, inSplitLen = inSplit.length; i < inSplitLen; i++) {
+                for (var i = 0, inSplitLen = aria.utils.Math.min(inSplit.length, this._maxOptions); i < inSplitLen; i++) {
                     for (var j = 0, optionsLen = options.length; j < optionsLen; j++) {
                         var key = aria.utils.String.trim(inSplit[i]);
                         options[j].label = options[j].label + "";
@@ -165,7 +173,8 @@ Aria.classDefinition({
 
                         if ((options[j].label.toLowerCase() == key.toLowerCase() || options[j].value.toLowerCase() == key.toLowerCase())) {
                             if ((options[j].label.toLowerCase() == key.toLowerCase() || options[j].value.toLowerCase() == key.toLowerCase())
-                                    && !aria.utils.Array.contains(selectedOptions, options[j].value) && !options[j].disabled) {
+                                    && !aria.utils.Array.contains(selectedOptions, options[j].value)
+                                    && !options[j].disabled) {
                                 selectedOptions.push(options[j].value);
                             }
                         }
