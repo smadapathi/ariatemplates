@@ -592,6 +592,11 @@ Aria.beanDefinitions({
                     $description : "Maximum number of options that can be selected at the same time.",
                     $minValue : 1
                 },
+                "multiselectSclass" : {
+                    $type : "json:String",
+                    $description : "sclass to be used for the multiselect.",
+                    $default : "dropdown"
+                },
                 "fieldDisplay" : {
                     $type : "json:Enum",
                     $description : "Whether to display code or value in the text input value.",
@@ -709,7 +714,7 @@ Aria.beanDefinitions({
                 },
                 "calendarSclass" : {
                     $type : "json:String",
-                    $description : "sclass to be used for the calendar the calendar.",
+                    $description : "sclass to be used for the calendar.",
                     $default : "dropdown"
                 },
                 "iconTooltip" : {
