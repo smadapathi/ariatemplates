@@ -1450,7 +1450,17 @@
                 var focusSuccess = false; // First look for widget...
                 var widgetToFocus = this.getBehaviorById(idToFocus);
                 if (widgetToFocus && (typeof(widgetToFocus.focus) != "undefined")) {
-                    widgetToFocus.focus(idArray);
+                    if (aria.core.Browser.isIE7) {
+                        aria.core.Timer.addCallback({
+                            fn : function () {
+                                widgetToFocus.focus(idArray);
+                            },
+                            scope : this,
+                            delay : 10
+                        });
+                    } else {
+                        widgetToFocus.focus(idArray);
+                    }
                     focusSuccess = true;
                 }
                 // ... then look for arbitrary dom element with id
@@ -1458,7 +1468,17 @@
                     var domElementId = this.$getId(idToFocus);
                     var elementToFocus = aria.utils.Dom.getElementById(domElementId);
                     if (elementToFocus) {
-                        elementToFocus.focus();
+                        if (aria.core.Browser.isIE7) {
+                            aria.core.Timer.addCallback({
+                                fn : function () {
+                                    elementToFocus.focus();
+                                },
+                                scope : this,
+                                delay : 10
+                            });
+                        } else {
+                            elementToFocus.focus();
+                        }
                         focusSuccess = true;
                     }
                 }
