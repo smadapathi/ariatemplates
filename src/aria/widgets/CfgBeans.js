@@ -552,9 +552,9 @@ Aria.beanDefinitions({
                     $type : "TextInputCfg.value",
                     $description : "Number currently displayed.",
                     $contentTypes : [{
-                        $type : "json:Float",
-                        $description : ""
-                    }]
+                                $type : "json:Float",
+                                $description : ""
+                            }]
                 }
             }
         },
@@ -789,9 +789,9 @@ Aria.beanDefinitions({
                     $type : "InputCfg.value",
                     $description : "Date currently selected in the date picker.",
                     $contentTypes : [{
-                        $type : "json:Date",
-                        $description : ""
-                    }]
+                                $type : "json:Date",
+                                $description : ""
+                            }]
                 }
             }
         },
@@ -953,6 +953,27 @@ Aria.beanDefinitions({
                     $default : [{
                                 key : "ENTER"
                             }]
+                }
+            }
+        },
+
+        "AutoCompleteMultiselect" : {
+            $type : "AutoCompleteCfg",
+            $description : "The base configuration for the Multiselect Autocomplete widget",
+            $properties : {
+                "multiSelectSeparator" : {
+                    $type : "json:String",
+                    $description : "To separate the selected values",
+                    $default : ","
+                },
+                "allowRangeValues" : {
+                    $type : "json:Boolean",
+                    $description : "To add range of values",
+                    $default : false
+                },
+                "maxOptions" : {
+                    $type : "json:Integer",
+                    $description : "Maximum no of options that can be selected with autocomplete."
                 }
             }
         },
