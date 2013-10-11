@@ -1274,6 +1274,142 @@ Aria.classDefinition({
                     offsetTop : 1
                 }
             },
+
+            MultiAutoComplete : {
+                simple : {
+                    simpleHTML : true
+                },
+                important : {
+                    label : {
+                        fontWeight : "bold"
+                    }
+                },
+                underlineError : {
+                    sprType : 4,
+                    states : {
+                        readOnly : {
+                            color : "#AB9B85",
+                            sprIdx : 7
+                        },
+                        normalErrorFocused : {
+                            sprIdx : 4
+                        },
+                        mandatoryErrorFocused : {
+                            sprIdx : 5
+                        },
+                        mandatory : {
+                            sprIdx : 1
+                        },
+                        normal : {
+                            marginBottom : 2,
+                            spriteURLv : "atskin/sprites/inputCentreUnderlineError.gif",
+                            sprHeight : 20,
+                            sprWidth : 7,
+                            marginTop : 3,
+                            color : "#000000",
+                            sprIdx : 0,
+                            spcLeft : 3,
+                            spriteURL : "atskin/sprites/inputEdgeUnderlineError.gif"
+                        },
+                        mandatoryFocused : {
+                            sprIdx : 3
+                        },
+                        mandatoryError : {
+                            sprIdx : 9
+                        },
+                        normalFocused : {
+                            sprIdx : 2
+                        },
+                        disabled : {
+                            color : "#E6D9C6",
+                            sprIdx : 6,
+                            label : {
+                                color : "#E6D9C6"
+                            }
+                        },
+                        normalError : {
+                            sprIdx : 8
+                        }
+                    }
+                },
+                std : {
+                    iconsRight : "dropdown",
+                    sprType : 4,
+                    states : {
+                        readOnly : {
+                            color : "#AB9B85",
+                            sprIdx : 7
+                        },
+                        mandatoryErrorFocused : {
+                            sprIdx : 5,
+                            icons : {
+                                dropdown : "dropdown:multiselect_error"
+                            }
+                        },
+                        normalErrorFocused : {
+                            sprIdx : 4,
+                            icons : {
+                                dropdown : "dropdown:multiselect_error"
+                            }
+                        },
+                        mandatory : {
+                            sprIdx : 1
+                        },
+                        normal : {
+                            marginBottom : 2,
+                            spriteURLv : "atskin/sprites/inputCentre.gif",
+                            skipLeftBorder : false,
+                            sprWidth : 7,
+                            sprHeight : 20,
+                            color : "#000000",
+                            marginTop : 3,
+                            sprIdx : 0,
+                            spcLeft : 3,
+                            icons : {
+                                dropdown : "dropdown:multiselect_normal"
+                            },
+                            spriteURL : "atskin/sprites/inputEdge.gif",
+                            skipRightBorder : "dependsOnIcon"
+                        },
+                        mandatoryFocused : {
+                            sprIdx : 3
+                        },
+                        prefill : {
+                            color : "gray"
+                        },
+                        mandatoryError : {
+                            sprIdx : 5,
+                            icons : {
+                                dropdown : "dropdown:multiselect_error"
+                            }
+                        },
+                        normalFocused : {
+                            sprIdx : 2,
+                            icons : {
+                                dropdown : "dropdown:multiselect_focused"
+                            }
+                        },
+                        disabled : {
+                            color : "#E6D9C6",
+                            sprIdx : 6,
+                            label : {
+                                color : "#E6D9C6"
+                            }
+                        },
+                        normalError : {
+                            sprIdx : 4,
+                            icons : {
+                                dropdown : "dropdown:multiselect_error"
+                            }
+                        }
+                    },
+                    helpText : {
+                        italics : true,
+                        color : "gray"
+                    },
+                    offsetTop : 1
+                }
+            },
             ErrorList : {
                 std : {
                     divsclass : "errorlist"

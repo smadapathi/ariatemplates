@@ -24,7 +24,7 @@
     Aria.classDefinition({
         $classpath : "aria.resources.handlers.MultiAutocompleteHandler",
         $extends : "aria.resources.handlers.LCResourcesHandler",
-        $implements : ["aria.resources.handlers.IMultiAutocompleteHandler"],
+        $implements : ["aria.resources.handlers.IMultiHandler"],
         $dependencies : ["aria.utils.String", "aria.resources.handlers.MultiAutocompleteHandlerBean"],
         $statics : {
             /**

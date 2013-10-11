@@ -1193,6 +1193,10 @@ Aria.beanDefinitions({
                 }
             }
         },
+        "MultiAutoCompleteCfg" : {
+            $type : "DropDownTextInputCfg",
+            $description : ""            
+        },
         "TabPanelCfg" : {
             $type : "Object",
             $description : "",

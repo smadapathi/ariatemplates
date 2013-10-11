@@ -957,7 +957,7 @@ Aria.beanDefinitions({
             }
         },
 
-        "AutoCompleteMultiselect" : {
+        "MultiAutoCompleteCfg" : {
             $type : "AutoCompleteCfg",
             $description : "The base configuration for the Multiselect Autocomplete widget",
             $properties : {
