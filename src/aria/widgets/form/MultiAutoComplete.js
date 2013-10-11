@@ -20,7 +20,7 @@ Aria.classDefinition({
     $classpath : "aria.widgets.form.MultiAutoComplete",
     $extends : "aria.widgets.form.DropDownTextInput",
     $dependencies : ["aria.widgets.form.DropDownListTrait", "aria.widgets.controllers.MultiAutocompleteController",
-            "aria.utils.Event"],
+            "aria.utils.Event", "aria.utils.Json"],
     $css : ["aria.widgets.form.MultiAutoCompleteStyle", "aria.widgets.form.list.ListStyle",
             "aria.widgets.container.DivStyle"],
     /**
@@ -49,18 +49,9 @@ Aria.classDefinition({
         this.$DropDownTextInput.constructor.call(this, cfg, ctxt, lineNumber, controller);
 
         this._isMultiAutocomplete = true;
+        this._hideIconNames = ["dropdown"];
 
-        /*if (!cfg.expandButton) {
-            *//**
-                 * Array of icon names which need to be hidden.
-                 * @type Array
-                 * @protected
-                 * @override
-                 */
-        /*
-                this._hideIconNames = ["dropdown"];
-                }*/
-
+        // controller.setMaxOptions(cfg.maxOptions);
         try {
             controller.setResourcesHandler(cfg.resourcesHandler);
         } catch (e) {
@@ -71,6 +62,8 @@ Aria.classDefinition({
         controller.maxlength = cfg.maxlength;
         controller.expandButton = cfg.expandButton;
         controller.selectionKeys = cfg.selectionKeys;
+        controller.allowRangeValues = cfg.allowRangeValues;
+        controller.maxOptions = cfg.maxOptions;
     },
     $destructor : function () {
         // The dropdown might still be open when we destroy the widget, destroy it now
@@ -118,12 +111,8 @@ Aria.classDefinition({
         _renderDropdownContent : function (out, options) {
             options = options || {};
             if (!("defaultTemplate" in options)) {
-                var cfg = this._cfg;
-                if (cfg.suggestionsTemplate) {
-                    options.defaultTemplate = cfg.suggestionsTemplate;
-                } else {
-                    options.defaultTemplate = this.controller.getDefaultTemplate();
-                }
+                options.defaultTemplate = this.controller.getDefaultTemplate();
+                // options.defaultTemplate = "aria.widgets.form.templates.TemplateMultiSelect";
             }
             if (!("minWidth" in options)) {
                 var inputMarkupWidth = this._inputMarkupWidth;
@@ -147,8 +136,9 @@ Aria.classDefinition({
                 this._keepFocus = false;
             }
             this.$DropDownTextInput._reactToControllerReport.call(this, report, arg);
-
-          this.controller._addMultiselectValues(this, report, arg);
+            if (report && report.value !== null) {
+                this.controller._addMultiselectValues(this, report, arg);
+            }
 
         },
 
@@ -219,6 +209,14 @@ Aria.classDefinition({
         _dom_oncut : function (event) {
             this.__propagateKeyDown(event);
         },
+        /**
+         * Internal method to handle the click event. This event is used to set focus on input field
+         * @param {aria.DomEvent} event Event object
+         * @protected
+         */
+        _dom_onclick : function (event) {
+            this._textInputField.focus();
+        },
 
         /**
          * Convert mouse event and browser copy/paste (contextual menu event) into a keydown event that can be handled
@@ -256,6 +254,7 @@ Aria.classDefinition({
                 this.$DropDownTextInput._onBoundPropertyChange.apply(this, arguments);
             }
         },
+
         /**
          * Initialization method called by the delegate engine when the DOM is loaded
          */
@@ -263,15 +262,24 @@ Aria.classDefinition({
             if (!this._cfg.expandButton && this._cfg.popupOpen) {
                 this._cfg.popupOpen = false;
             }
+
             this.$DropDownTextInput.initWidget.call(this);
-        },
-        
-        _dom_onclick : function (domEvent) {
-            domEvent.preventDefault();
-            if(domEvent.target.className !=="closeBtn"){
-                return;
+            var cfg = this._cfg;
+            if (cfg.selectedValue) {
+                var report = this.controller.checkValue(cfg.selectedValue);
+                this._reactToControllerReport(report);
             }
-            this.controller._removeMultiselectValues(domEvent.target);
-         }
+        },
+        /**
+         * Internal function to notify change on slectedValues
+         * @protected
+         */
+
+        _updateModel : function (value) {
+            var selectedValues = aria.utils.Json.copy(value);
+            this.setProperty("selectedValue", selectedValues);
+        }
     }
 });
+
+// @ sourceURL=aria/widgets/form/MultiAutoComplete.js

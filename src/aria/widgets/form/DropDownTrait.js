@@ -100,7 +100,7 @@ Aria.classDefinition({
                     this._keepFocus = true;
                 }
             } else if (evt.name == "iconClick" && evt.iconName == "dropdown" && !this._cfg.disabled) {
-                this._toggleDropdown();
+                this._toggleDropdown(evt);
             }
         },
 

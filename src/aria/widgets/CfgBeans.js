@@ -877,7 +877,7 @@ Aria.beanDefinitions({
                 },
                 "freeText" : {
                     $type : "json:Boolean",
-                    $description : "Specifies if the user can enter its own text",
+                    $description : "Specifies if the user can enter its own text.In case of MultiAutocomplete user can edit the text as well on double click",
                     $default : true
                 },
                 "suggestionsTemplate" : {
@@ -974,6 +974,14 @@ Aria.beanDefinitions({
                 "maxOptions" : {
                     $type : "json:Integer",
                     $description : "Maximum no of options that can be selected with autocomplete."
+                },
+                "bind" : {
+                    $type : "DropDownTextInputCfg.bind",
+                    $properties : {
+                        "selectedValue" : {
+                            $type : "common:BindingRef"
+                        }
+                    }
                 }
             }
         },

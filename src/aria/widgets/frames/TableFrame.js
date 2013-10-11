@@ -21,7 +21,7 @@
 Aria.classDefinition({
     $classpath : "aria.widgets.frames.TableFrame",
     $extends : "aria.widgets.frames.Frame",
-    $dependencies : ["aria.utils.Dom"],
+    $dependencies : ["aria.utils.Dom", "aria.utils.Delegate"],
     $constructor : function (cfg) {
         this.$Frame.constructor.call(this, cfg);
 
@@ -41,8 +41,15 @@ Aria.classDefinition({
          * @protected
          */
         this._inlineBlock = cfg.inlineBlock;
+
+        this._delegateId = null;
     },
     $statics : {},
+    $events : {
+        "frameClick" : {
+            description : "Raised when frame is clicked."
+        }
+    },
     $destructor : function () {
         var tds = this._tds;
         if (tds) {
@@ -52,6 +59,7 @@ Aria.classDefinition({
             }
             this._tds = null;
         }
+        aria.utils.Delegate.remove(this._delegateId);
         this.$Frame.$destructor.call(this);
     },
     $prototype : {
@@ -61,9 +69,11 @@ Aria.classDefinition({
         _computeSize : function () {
 
             /*
-             * FIXME propery: setting a CORRECT innerHeight makes the frame too big firefox fix : -2px negative margin
-             * on inner span GOAL: proper outerWidth, with proper innerWidth, resize with current height and width must
-             * not change the size.
+             * FIXME propery: setting a CORRECT innerHeight makes the
+             * frame too big firefox fix : -2px negative margin on inner
+             * span GOAL: proper outerWidth, with proper innerWidth,
+             * resize with current height and width must not change the
+             * size.
              */
 
             var cfg = this._cfg, state = cfg.stateObject;
@@ -76,8 +86,8 @@ Aria.classDefinition({
             if (cfg.height > -1) {
                 var h = cfg.height - state.sprHeight - state.marginTop - state.marginBottom;
                 /*
-                 * TODO: find why -7 is needed (where are these 7 pixels lost in IE?) especially test on IE8 if changing
-                 * -7
+                 * TODO: find why -7 is needed (where are these 7 pixels
+                 * lost in IE?) especially test on IE8 if changing -7
                  */
                 this.innerHeight = h > 0 ? h : 0;
             } else {
@@ -91,16 +101,25 @@ Aria.classDefinition({
          * @param {aria.templates.MarkupWriter} out
          */
         writeMarkupBegin : function (out) {
-            var cfg = this._cfg, cssPrefix = this._cssPrefix; // , state = cfg.stateObject;
+            var cfg = this._cfg, cssPrefix = this._cssPrefix;
             var frameContainerClass = (cfg.block !== true) ? ' ' : 'class="xBlock"';
             var sizeInfo = {
                 style : '',
                 /*
-                 * TODO: the CSS class cssClass should not define any padding, margin or border for the frame to be
+                 * TODO: the CSS class cssClass should not define any
+                 * padding, margin or border for the frame to be
                  * correctly displayed
                  */
                 className : 'xFrameContent ' + cssPrefix + 'c ' + cfg.cssClass
             };
+
+            var utilDelegate = aria.utils.Delegate, delegateId;
+
+            delegateId = utilDelegate.add({
+                fn : this._delegateFrame,
+                scope : this
+            });
+            this._delegateId = delegateId;
             this._appendInnerWidthInfo(sizeInfo);
             this._appendInnerHeightInfo(sizeInfo);
             var displayInline = (this._inlineBlock) ? "display:inline-block;vertical-align: middle;" : "";
@@ -111,7 +130,8 @@ Aria.classDefinition({
                     cssPrefix, 'bkgA"></td>', '</tr>', '<tr>', '<td class="', cssPrefix, 'ls ', cssPrefix,
                     'bkgC"></td>', '<td class="', cssPrefix, 'm">', '<span ',
                     Aria.testMode && this._baseId ? ' id="' + this._baseId + '"' : '',
-                    (sizeInfo.style ? 'style="' + sizeInfo.style + '"' : ''), ' class="', sizeInfo.className, '">'].join(''));
+                    (sizeInfo.style ? 'style="' + sizeInfo.style + '"' : ''), ' class="', sizeInfo.className,
+                    '"' + utilDelegate.getMarkup(delegateId) + '>'].join(''));
         },
 
         /**
@@ -119,7 +139,7 @@ Aria.classDefinition({
          * @param {aria.templates.MarkupWriter} out
          */
         writeMarkupEnd : function (out) {
-            var cfg = this._cfg, cssPrefix = this._cssPrefix; // sclass = cfg.sclass
+            var cfg = this._cfg, cssPrefix = this._cssPrefix;
             out.write(['</span></td>', '<td class="', cssPrefix, 'rs ', cssPrefix, 'bkgC"></td>', '</tr>', '<tr>',
                     '<td class="', cssPrefix, 'blc ', cssPrefix, 'bkgA"></td>', '<td class="', cssPrefix, 'bs ',
                     cssPrefix, 'bkgB">', this.__addFrameIcon(cfg, cssPrefix, 'bottom'), '</td>', '<td class="',
@@ -136,7 +156,8 @@ Aria.classDefinition({
             this.$Frame.linkToDom.call(this, domElt);
             var getDomElementChild = aria.utils.Dom.getDomElementChild;
             /*
-             * FIXME: extend getDomElementChild API to have getDomElementChild(domElt,0,1,1,0) instead
+             * FIXME: extend getDomElementChild API to have
+             * getDomElementChild(domElt,0,1,1,0) instead
              */
             this._childRootElt = getDomElementChild(getDomElementChild(getDomElementChild(getDomElementChild(domElt, 0), 1), 1), 0);
         },
@@ -160,7 +181,8 @@ Aria.classDefinition({
          * @param {String} stateName name of the state
          */
         changeState : function (stateName) {
-            this.$Frame.changeState.call(this, stateName); // this must be
+            this.$Frame.changeState.call(this, stateName); // this must
+            // be
             // called before
             // assigning
             // cssPrefix
@@ -273,6 +295,15 @@ Aria.classDefinition({
         resize : function (width, height) {
             this.$Frame.resize.call(this, width, height);
             this.changeState(this.getStateName());
+        },
+        _delegateFrame : function (event) {
+            if (event.type === "mousedown") {
+                event.stopPropagation();
+                this.$raiseEvent({
+                    name : "frameClick"
+                });
+
+            }
         }
     }
 });

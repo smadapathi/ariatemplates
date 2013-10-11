@@ -1407,6 +1407,11 @@ Aria.classDefinition({
                         italics : true,
                         color : "gray"
                     },
+                    closeSpriteBackground : "#E4E4E4",
+                    closeSpriteURL : "atdefskin/sprites/closemark.gif",
+                    option : {
+                        color : "#333"
+                    },
                     offsetTop : 1
                 }
             },

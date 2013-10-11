@@ -109,7 +109,7 @@ Aria.classDefinition({
             "AutoComplete" : 1,
             "TabPanel" : 1,
             "Tab" : 1,
-            "MultiAutoComplete" : 1 
+            "MultiAutoComplete" : 1
         },
 
         /**
