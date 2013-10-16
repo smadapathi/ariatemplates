@@ -146,21 +146,10 @@ Aria.classDefinition({
             if (!this.controller._resetFocus) {
                 this._keepFocus = false;
             }
-            
-            var arg = arg || {};
-            
-            arg.multiAuto = true;
-            
             this.$DropDownTextInput._reactToControllerReport.call(this, report, arg);
-            
-           // this._addMultiselectValues(report, arg);
 
-        },
-        
-        _addMultiselectValues : function(report, arg){
-        	var multiselectctrl = this.controller;
-        	
-        	
+          this.controller._addMultiselectValues(this, report, arg);
+
         },
 
         /**
@@ -275,6 +264,14 @@ Aria.classDefinition({
                 this._cfg.popupOpen = false;
             }
             this.$DropDownTextInput.initWidget.call(this);
-        }
+        },
+        
+        _dom_onclick : function (domEvent) {
+            domEvent.preventDefault();
+            if(domEvent.target.className !=="closeBtn"){
+                return;
+            }
+            this.controller._removeMultiselectValues(domEvent.target);
+         }
     }
 });

@@ -287,6 +287,20 @@
                 return null;
 
             },
+            
+            _addMultiselectValues : function(ref, report, arg){
+            	if(typeof report.value=="object" && report.value!==null && report.text!==null){
+            		var domUtil = aria.utils.Dom;
+                    domUtil.insertAdjacentHTML(ref._textInputField, "beforeBegin", "<div class='xMultiAutocomplete_options'><span>"+report.text+"</span><a href='javascript:void(0);' data-value='"+report.text+"' class='closeBtn'>&times;</a></div>");
+                    ref._textInputField.value="";
+            	}
+            	
+            },
+            
+            _removeMultiselectValues : function(domElement){
+            	var parent = domElement.parentNode, domUtil = aria.utils.Dom;
+            	domUtil.removeElement(parent);
+            },
 
             /**
              * Callback after the asynchronous suggestions
