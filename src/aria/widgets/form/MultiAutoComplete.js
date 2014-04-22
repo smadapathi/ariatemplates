@@ -513,6 +513,7 @@ Aria.classDefinition({
 
             if (this.isInputFieldFocused()) {
                 this.$AutoComplete._dom_onkeydown.call(this, event);
+                inputField.focus();
             }
         },
         _dom_onkeypress : function (event) {
