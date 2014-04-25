@@ -22,7 +22,8 @@ Aria.classDefinition({
     $dependencies : ["aria.pageEngine.CfgBeans", "aria.pageEngine.SiteRootModule", "aria.templates.ModuleCtrlFactory",
             "aria.core.JsonValidator", "aria.pageEngine.utils.SiteConfigHelper",
             "aria.pageEngine.utils.PageConfigHelper", "aria.embed.PlaceholderManager", "aria.utils.Type",
-            "aria.pageEngine.utils.PageEngineUtils", "aria.utils.CSSLoader", "aria.utils.Json", "aria.core.Browser"],
+            "aria.utils.String", "aria.pageEngine.utils.PageEngineUtils", "aria.utils.CSSLoader", "aria.utils.Json",
+            "aria.core.Browser"],
     $constructor : function () {
         /**
          * Start configuration
@@ -37,7 +38,12 @@ Aria.classDefinition({
          * @protected
          */
         this._pageProvider = null;
-
+        /**
+         * Custom Root Module Controller for the application, an instance of aria.pageEngine.SiteRootModule
+         * @type aria.templates.CfgBeans:InitModuleCtrl
+         * @protected
+         */
+        this._instanceOfSiteRootModule = null;
         /**
          * Navigation manager
          * @type aria.pageEngine.utils.HashManager|aria.pageEngine.utils.HistoryManager
@@ -226,7 +232,8 @@ Aria.classDefinition({
         INVALID_SITE_CONFIGURATION : "The configuration object of the application is not valid",
         PAGE_NOT_AVAILABLE : "Unable to retrieve page %1",
         INVALID_PAGE_DEFINITION : "The page definition does not match the bean aria.pageEngine.CfgBeans.PageDefinition",
-        MISSING_DEPENDENCIES : "Unable to download Page Engine dependencies"
+        MISSING_DEPENDENCIES : "Unable to download Page Engine dependencies",
+        INVALID_PARENT_ROOTMODULE : "Custom root module controller should extend aria.pageEngine.SiteRootModule"
     },
     $prototype : {
 
@@ -238,6 +245,7 @@ Aria.classDefinition({
 
             this._config = config;
             this._pageProvider = config.pageProvider;
+            this._instanceOfSiteRootModule = config.rootModule;
             aria.embed.PlaceholderManager.register(this);
             this._pageProvider.$addListeners({
                 "pageDefinitionChange" : this._onPageDefinitionChangeListener
@@ -273,15 +281,45 @@ Aria.classDefinition({
 
             // Initialization
             var appData = helper.getAppData();
+            var initArgs = {
+                appData : appData,
+                pageEngine : this._wrapper
+            };
 
             appData.menus = appData.menus || {};
+            if (this._instanceOfSiteRootModule) {
+                var instanceOfSiteRootModuleConfig = this._instanceOfSiteRootModule;
+                var customControllerClassPath = instanceOfSiteRootModuleConfig.classpath;
+                if (instanceOfSiteRootModuleConfig.initArgs) {
+                    aria.utils.Json.inject(instanceOfSiteRootModuleConfig.initArgs, initArgs);
+                };
+                var that = this;
+                Aria.load({
+                    classes : [customControllerClassPath],
+                    oncomplete : function () {
+                        if (Aria.getClassRef(customControllerClassPath).classDefinition.$extends !== "aria.pageEngine.SiteRootModule") {
+                            this.$logError(that.INVALID_PARENT_ROOTMODULE);
+                            return;
+                        }
+                        that._createModuleCtrl(customControllerClassPath, initArgs);
+                    }
 
+                });
+            } else {
+                this._createModuleCtrl("aria.pageEngine.SiteRootModule", initArgs);
+            }
+
+        },
+        /**
+         * Internal method to create module controller
+         * @param {aria.core.JsonTypes:PackageName} classPath
+         * @param {Object} initArgs
+         * @protected
+         */
+        _createModuleCtrl : function (classPath, initArgs) {
             aria.templates.ModuleCtrlFactory.createModuleCtrl({
-                classpath : "aria.pageEngine.SiteRootModule",
-                initArgs : {
-                    appData : helper.getAppData(),
-                    pageEngine : this._wrapper
-                }
+                classpath : classPath,
+                initArgs : initArgs
             }, {
                 fn : this._loadSiteDependencies,
                 scope : this
@@ -301,6 +339,7 @@ Aria.classDefinition({
 
             var classesToLoad = siteHelper.getListOfContentProcessors();
             var navigationManagerClass = siteHelper.getNavigationManagerClass();
+
             if (navigationManagerClass) {
                 classesToLoad.push(navigationManagerClass);
             }
